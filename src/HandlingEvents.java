@@ -120,15 +120,15 @@ public class HandlingEvents extends JPanel
 		switch (e.getKeyCode())
 		{
 			case KeyEvent.VK_UP:
-				y-=6;
+				y-=5;
 				break;
 				
 			case KeyEvent.VK_LEFT:
-				x -= 6;
+				x-=5;
 				break;
 				
 			case KeyEvent.VK_RIGHT:
-				x += 6;
+				x+=5;
 				break;
 		}
 	}
