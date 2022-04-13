@@ -10,7 +10,7 @@ import java.awt.event.*;
 import javax.swing.*;
 
 public class HandlingEvents extends JPanel
-	implements Runnable
+	implements Runnable, ActionListener
 {
 	private static int x, y, xW, yH, xFrontMost, yBottom, dHeight,
 					   x_LOCTN_ON_SCREEN, GRND_ELEV_ON_SCREEN, t, time;
@@ -24,6 +24,15 @@ public class HandlingEvents extends JPanel
 	
 	public HandlingEvents()
 	{
+		xW = cubeHitbox;
+		yH = cubeHitbox;
+
+		x_LOCTN_ON_SCREEN = 1536 / 4;
+		GRND_ELEV_ON_SCREEN = (5 * 841) / 8 + yH;
+		
+		x = x_LOCTN_ON_SCREEN;
+		y = GRND_ELEV_ON_SCREEN - yH - startingHeight;
+		
 		JFrame w;
 		w = new JFrame("Basic Game");
 		w.setExtendedState(JFrame.MAXIMIZED_BOTH);
@@ -33,7 +42,7 @@ public class HandlingEvents extends JPanel
 		w.setVisible(true);
 		
 		canvas = new Canvas();
-		canvas.setBounds(0, 0, 9999, 9999);
+		canvas.setBounds(0, 0, 2000, 1000);
 		canvas.setIgnoreRepaint(true);
 		
 		canvas.addKeyListener(new KeyAdapter()
@@ -50,20 +59,18 @@ public class HandlingEvents extends JPanel
 		bufferStrategy = canvas.getBufferStrategy();
 		canvas.requestFocus();
 		
-		xW = cubeHitbox;
-		yH = cubeHitbox;
-
-		x_LOCTN_ON_SCREEN = 1536 / 4;
-		GRND_ELEV_ON_SCREEN = (5 * 841) / 8 + yH;
-		
-		x = x_LOCTN_ON_SCREEN;
-		y = GRND_ELEV_ON_SCREEN - yH - startingHeight;
+		time = 0;
+		Timer clock = new Timer(1, this); 
+		clock.start();
 	}
 	
 	public void Paint(Graphics g)
 	{
 		g.setColor(Color.BLUE);
-	    g.drawLine(0, GRND_ELEV_ON_SCREEN, 3072, GRND_ELEV_ON_SCREEN);
+	    g.drawLine(0, GRND_ELEV_ON_SCREEN, 2000, GRND_ELEV_ON_SCREEN);
+	    
+	    g.setColor(Color.RED);
+	    g.drawLine(1536 - time, GRND_ELEV_ON_SCREEN - 31, 1536 - time, GRND_ELEV_ON_SCREEN - 1);
 	    
 		xFrontMost = x + xW - 1;
 		yBottom = y + yH - 1;
@@ -85,6 +92,7 @@ public class HandlingEvents extends JPanel
 			x = 1536 - xW + 1;
 		}
 		
+		
 //		System.out.println(t + " " + x + " " + 1536 + " " + yBottom + " " + GRND_ELEV_ON_SCREEN);
 	    
 		g.setColor(Color.BLACK);
@@ -99,7 +107,7 @@ public class HandlingEvents extends JPanel
 			Repaint();
 
 			try {
-				Thread.sleep(25);
+				Thread.sleep(20);
 			}
 			
 			catch (InterruptedException e) {
@@ -110,9 +118,15 @@ public class HandlingEvents extends JPanel
 	public void Repaint()
 	{
 		Graphics g = (Graphics) bufferStrategy.getDrawGraphics();
-		g.clearRect(0, 0, 9999, 9999);
+		g.clearRect(x-12, y-20, xW+24, yH+40);
 		Paint(g);
 		bufferStrategy.show();
+	}
+	
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		time++;
+		repaint();
 	}
 	
 	public void KeyPressed(KeyEvent e)
@@ -120,7 +134,7 @@ public class HandlingEvents extends JPanel
 		switch (e.getKeyCode())
 		{
 			case KeyEvent.VK_UP:
-				y-=5;
+				y-=8;
 				break;
 				
 			case KeyEvent.VK_LEFT:
