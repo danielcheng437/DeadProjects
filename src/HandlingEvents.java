@@ -64,13 +64,23 @@ public class HandlingEvents extends JPanel
 		clock.start();
 	}
 	
-	public void Paint(Graphics g)
+	@Override
+	public void paintComponent(Graphics g)
 	{
+		super.paintComponent(g);
+		
 		g.setColor(Color.BLUE);
 	    g.drawLine(0, GRND_ELEV_ON_SCREEN, 2000, GRND_ELEV_ON_SCREEN);
 	    
-	    g.setColor(Color.RED);
-	    g.drawLine(1536 - time, GRND_ELEV_ON_SCREEN - 31, 1536 - time, GRND_ELEV_ON_SCREEN - 1);
+		g.setColor(Color.RED);
+	    g.drawLine((int)(768 * Math.cos((Math.PI * time) / 768.0) + 768), GRND_ELEV_ON_SCREEN - 31,
+	    		   (int)(768 * Math.cos((Math.PI * time) / 768.0) + 768), GRND_ELEV_ON_SCREEN - 1);
+	}
+	
+	public void PaintPlayer(Graphics g)
+	{
+		g.setColor(Color.BLUE);
+	    g.drawLine(0, GRND_ELEV_ON_SCREEN, 2000, GRND_ELEV_ON_SCREEN);
 	    
 		xFrontMost = x + xW - 1;
 		yBottom = y + yH - 1;
@@ -119,11 +129,10 @@ public class HandlingEvents extends JPanel
 	{
 		Graphics g = (Graphics) bufferStrategy.getDrawGraphics();
 		g.clearRect(x-12, y-20, xW+24, yH+40);
-		Paint(g);
+		PaintPlayer(g);
 		bufferStrategy.show();
 	}
 	
-	@Override
 	public void actionPerformed(ActionEvent e) {
 		time++;
 		repaint();
