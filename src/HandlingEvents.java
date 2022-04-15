@@ -15,7 +15,7 @@ public class HandlingEvents extends JPanel
 	private static int x, y, xW, yH, xFrontMost, yBottom, dHeight,
 					   x_LOCTN_ON_SCREEN, GRND_ELEV_ON_SCREEN, t, time;
 	private static final int startingHeight = 150;
-	private static final int cubeHitbox = 48;
+	private static final int cubeHitbox = 30;
 	private static boolean wT;
 	
 	Canvas canvas;
@@ -64,23 +64,16 @@ public class HandlingEvents extends JPanel
 		clock.start();
 	}
 	
-	@Override
-	public void paintComponent(Graphics g)
-	{
-		super.paintComponent(g);
-		
-		g.setColor(Color.BLUE);
-	    g.drawLine(0, GRND_ELEV_ON_SCREEN, 2000, GRND_ELEV_ON_SCREEN);
-	    
-		g.setColor(Color.RED);
-	    g.drawLine((int)(768 * Math.cos((Math.PI * time) / 768.0) + 768), GRND_ELEV_ON_SCREEN - 31,
-	    		   (int)(768 * Math.cos((Math.PI * time) / 768.0) + 768), GRND_ELEV_ON_SCREEN - 1);
-	}
-	
 	public void PaintPlayer(Graphics g)
 	{
 		g.setColor(Color.BLUE);
 	    g.drawLine(0, GRND_ELEV_ON_SCREEN, 2000, GRND_ELEV_ON_SCREEN);
+	    
+	    g.setColor(Color.RED);
+	    g.drawLine(Math.abs((3 * time) % 3072 - 1536), GRND_ELEV_ON_SCREEN - 31,
+	    		   Math.abs((3 * time) % 3072 - 1536), GRND_ELEV_ON_SCREEN - 1);
+	    g.drawLine(Math.abs((3 * time + 1536) % 3072 - 1536), GRND_ELEV_ON_SCREEN - 31,
+	    		   Math.abs((3 * time + 1536) % 3072 - 1536), GRND_ELEV_ON_SCREEN - 1);
 	    
 		xFrontMost = x + xW - 1;
 		yBottom = y + yH - 1;
@@ -101,9 +94,8 @@ public class HandlingEvents extends JPanel
 		if (x > 1536 - xW + 1) {
 			x = 1536 - xW + 1;
 		}
-		
-		
-//		System.out.println(t + " " + x + " " + 1536 + " " + yBottom + " " + GRND_ELEV_ON_SCREEN);
+
+		System.out.println(Math.abs((2 * time - 1536) % 3072 - 1536));
 	    
 		g.setColor(Color.BLACK);
 		g.fillRect(x, y, xW, yH);
@@ -128,7 +120,7 @@ public class HandlingEvents extends JPanel
 	public void Repaint()
 	{
 		Graphics g = (Graphics) bufferStrategy.getDrawGraphics();
-		g.clearRect(x-12, y-20, xW+24, yH+40);
+		g.clearRect(0, 0, 2000, 1000);
 		PaintPlayer(g);
 		bufferStrategy.show();
 	}
