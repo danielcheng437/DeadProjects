@@ -12,26 +12,24 @@ import javax.swing.*;
 public class HandlingEvents extends JPanel
 	implements Runnable, ActionListener
 {
-	private static int x, y, xW, yH, xFrontMost, yBottom, dHeight,
-					   x_LOCTN_ON_SCREEN, GRND_ELEV_ON_SCREEN, t, time;
-	private static final int startingHeight = 150;
-	private static final int cubeHitbox = 30;
-	private static boolean wT;
+	public static final int startingHeight = 150;
+	public static final int cubeHitbox = 30;
 	
+	PaintObjects p = new PaintObjects();
 	Canvas canvas;
 	BufferStrategy bufferStrategy;
 	boolean running = true;
 	
 	public HandlingEvents()
 	{
-		xW = cubeHitbox;
-		yH = cubeHitbox;
+		p.xW = cubeHitbox;
+		p.yH = cubeHitbox;
 
-		x_LOCTN_ON_SCREEN = 1536 / 4;
-		GRND_ELEV_ON_SCREEN = (5 * 841) / 8 + yH;
+		p.x_LOCTN_ON_SCREEN = 1536 / 4;
+		p.GRND_ELEV_ON_SCREEN = (5 * 841) / 8 + p.yH;
 		
-		x = x_LOCTN_ON_SCREEN;
-		y = GRND_ELEV_ON_SCREEN - yH - startingHeight;
+		p.x = p.x_LOCTN_ON_SCREEN;
+		p.y = p.GRND_ELEV_ON_SCREEN - p.yH - startingHeight;
 		
 		JFrame w;
 		w = new JFrame("Basic Game");
@@ -42,7 +40,7 @@ public class HandlingEvents extends JPanel
 		w.setVisible(true);
 		
 		canvas = new Canvas();
-		canvas.setBounds(0, 0, 2000, 1000);
+		canvas.setBounds(0, 0, 1600, 900);
 		canvas.setIgnoreRepaint(true);
 		
 		canvas.addKeyListener(new KeyAdapter()
@@ -59,53 +57,16 @@ public class HandlingEvents extends JPanel
 		bufferStrategy = canvas.getBufferStrategy();
 		canvas.requestFocus();
 		
-		time = 0;
+		p.time = 0;
 		Timer clock = new Timer(1, this); 
 		clock.start();
-	}
-	
-	public void PaintPlayer(Graphics g)
-	{
-		g.setColor(Color.BLUE);
-	    g.drawLine(0, GRND_ELEV_ON_SCREEN, 2000, GRND_ELEV_ON_SCREEN);
-	    
-	    g.setColor(Color.RED);
-	    g.drawLine(Math.abs((3 * time) % 3072 - 1536), GRND_ELEV_ON_SCREEN - 31,
-	    		   Math.abs((3 * time) % 3072 - 1536), GRND_ELEV_ON_SCREEN - 1);
-	    g.drawLine(Math.abs((3 * time + 1536) % 3072 - 1536), GRND_ELEV_ON_SCREEN - 31,
-	    		   Math.abs((3 * time + 1536) % 3072 - 1536), GRND_ELEV_ON_SCREEN - 1);
-	    
-		xFrontMost = x + xW - 1;
-		yBottom = y + yH - 1;
-		
-		if (yBottom < GRND_ELEV_ON_SCREEN - 1) {
-	    	y = Math.min(y + (((t + 108) * (t - 108)) / 96) + 121, GRND_ELEV_ON_SCREEN - yH);
-	    }
-		
-		else {
-			y = GRND_ELEV_ON_SCREEN - yH;
-			t = 0;
-		}
-		
-		if (x < 0) {
-			x = 0;
-		}
-		
-		if (x > 1536 - xW + 1) {
-			x = 1536 - xW + 1;
-		}
-
-		System.out.println(Math.abs((2 * time - 1536) % 3072 - 1536));
-	    
-		g.setColor(Color.BLACK);
-		g.fillRect(x, y, xW, yH);
 	}
 	
 	public void run()
 	{
 		while (running = true)
 		{
-			t++;
+			p.t++;
 			Repaint();
 
 			try {
@@ -120,13 +81,13 @@ public class HandlingEvents extends JPanel
 	public void Repaint()
 	{
 		Graphics g = (Graphics) bufferStrategy.getDrawGraphics();
-		g.clearRect(0, 0, 2000, 1000);
-		PaintPlayer(g);
+		g.clearRect(0, 0, 1600, 900);
+		p.PaintPlayer(g);
 		bufferStrategy.show();
 	}
 	
 	public void actionPerformed(ActionEvent e) {
-		time++;
+		p.time++;
 		repaint();
 	}
 	
@@ -135,15 +96,15 @@ public class HandlingEvents extends JPanel
 		switch (e.getKeyCode())
 		{
 			case KeyEvent.VK_UP:
-				y-=8;
+				p.y-=8;
 				break;
 				
 			case KeyEvent.VK_LEFT:
-				x-=5;
+				p.x-=5;
 				break;
 				
 			case KeyEvent.VK_RIGHT:
-				x+=5;
+				p.x+=5;
 				break;
 		}
 	}
